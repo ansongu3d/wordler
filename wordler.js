@@ -6,14 +6,16 @@ const gameBoard = document.querySelector("#gameBoard");
 const infoBox = document.querySelector("#infoBox");
 const wordList = ["super", "light", "actor", "goose", "whale"];
 const secretWord = wordList[Math.floor(Math.random() * (wordList.length + 1))];
+console.log(secretWord);
+let previousLetters = 0;
+let guessWord = "";
 
+//merge 5 lettes in one word;
 function getGuessWord(activeBoxes, from, to) {
-  let guessWord = "";
+  // let guessWord = "";
   for (let i = from; i < to; ++i) {
     guessWord += activeBoxes[i].getAttribute("data-letter");
   }
-
-  console.log(guessWord);
   return guessWord;
 }
 
@@ -28,7 +30,6 @@ function loadLetterBox() {
     }
   }
 }
-
 loadLetterBox();
 
 // Build a function to handle key press:
@@ -36,6 +37,7 @@ loadLetterBox();
 // 2."enter" key for sumbit guess word to match secretWord;
 // 3."backspace" & "delete" key to remove the wrong type letter;
 // 4.letter box change color: ACTIVE: Light Grey, WRONG: Grey, WRONG_LOCATION: yellow, CORRECT: green;
+// 5.create infoBox to show hint message: 1."Not Enough Letters", 2."Not In the Wordlist", 3.'Congratations! Matched:"secretword"'
 
 startPress();
 
@@ -43,32 +45,39 @@ function startPress() {
   document.addEventListener("keyup", inputLetters);
 }
 
-//create infoBox to show hint message: 1."Not Enough Letters", 2."Not In the Wordlist", 3.'Congratations! Matched:"secretword"'
-
+function getActiveBoxes() {
+  return gameBoard.querySelectorAll('[data-state="active"]');
+}
 function inputLetters(e) {
-  console.log("test", e.key === "Enter", e.key.match(/([a-z])/g));
+  // enter to match;
   if (e.key === "Enter") {
-    console.log("test3");
     const activeBoxes = getActiveBoxes();
-    console.log(activeBoxes);
     getGuessWord(activeBoxes, 0, 5);
-
+    previousLetters = activeBoxes.length;
+    console.log(guessWord);
+    console.log(activeBoxes.length);
+    console.log(wordLength);
     if (activeBoxes.length !== wordLength) {
       infoBox.textContent = "Not enough letters";
       return;
-    }
-
-    if (!wordList.includes(guessWord)) {
+    } else if (!wordList.includes(guessWord)) {
       infoBox.textContent = "Not in word list";
       return;
+    } else if (secretWord.match(guessWord)) {
+      checkLetter();
+      infoBox.textContent = " 🥳 Congrats! ☑️" + secretWord;
+      return;
     }
-  } else if (e.key === "Backspace" || e.key === "Delete") {
+  }
+  // delete mistake letters;
+  else if (e.key === "Backspace" || e.key === "Delete") {
     deleteKey();
     return;
-  } else if (e.key.match(/([a-z])/g)) {
-    console.log("test2");
+  }
+  // limit type keyA-Z;
+  else if (e.key.match(/^[a-zA-Z]+$/)) {
     const activeBoxes = getActiveBoxes();
-    if (activeBoxes.length >= wordLength) {
+    if (activeBoxes.length - previousLetters >= wordLength) {
       return;
     }
     const keyBox = gameBoard.querySelector(":not([data-letter])");
@@ -77,10 +86,6 @@ function inputLetters(e) {
     keyBox.dataset.state = "active";
     return;
   }
-}
-
-function getActiveBoxes() {
-  return gameBoard.querySelectorAll('[data-state="active"]');
 }
 
 function deleteKey() {
@@ -92,6 +97,25 @@ function deleteKey() {
     lastBox.textContent = "";
     delete lastBox.dataset.state;
     delete lastBox.dataset.letter;
+  }
+}
+
+function checkLetter() {
+  const keyBox = gameBoard.querySelector("[data-letter]");
+  const letter = keyBox.dataset.letter;
+  console.log(guessWord);
+  console.log(letter);
+  for (let i = 0; i < 5; i++) {
+    if (secretWord[i] === guessWord[i]) {
+      keyBox.dataset.state = "correct";
+      keyBox.classList.add("correct");
+    } else if (secretWord.includes(letter)) {
+      keyBox.dataset.state = "wrong-location";
+      keyBox.classList.add("wrong-location");
+    } else {
+      keyBox.dataset.state = "wrong";
+      keyBox.classList.add("wrong");
+    }
   }
 }
 //create play again button;
