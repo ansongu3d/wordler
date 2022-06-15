@@ -26,10 +26,10 @@ header {
 
 .box {
   /* frame */
-  width: 60px;
-  height: 60px;
-  border: 2px solid gray;
-  margin: 5px;
+  width: 3.75rem;
+  height: 3.75rem;
+  border: 0.125rem solid gray;
+  margin: 0.3125rem;
 
   /* text */
   color: white;
@@ -39,4 +39,30 @@ header {
   align-items: center;
   font-family: "Press Start 2P", cursive;
   font-size: 2.4rem;
+}
+
+#infoBox {
+  margin-top: 20px;
+  color: white;
+  font-family: "Press Start 2P", cursive;
+  font-size: 1.2rem;
+}
+
+.box[data-state="active"] {
+  border-color: hsl(0, 8%, 97%);
+}
+
+.box[data-state="wrong"] {
+  border: none;
+  background-color: hsl(240, 2%, 23%);
+}
+
+.box[data-state="wrong-location"] {
+  border: none;
+  background-color: hsl(49, 51%, 47%);
+}
+
+.box[data-state="correct"] {
+  border: none;
+  background-color: hsl(115, 29%, 43%);
 }

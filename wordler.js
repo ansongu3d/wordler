@@ -1,6 +1,4 @@
 // create global variable here;
-const height = 6;
-const width = 5;
 const wordLength = 5;
 const gameBoard = document.querySelector("#gameBoard");
 const infoBox = document.querySelector("#infoBox");
@@ -21,15 +19,14 @@ function getGuessWord(activeBoxes, from, to) {
 
 // create game board & letter box;
 function loadLetterBox() {
-  for (let row = 0; row < height; row++) {
-    for (let col = 0; col < width; col++) {
-      let box = document.createElement("div");
-      box.classList.add("box");
-      box.textContent = "";
-      document.querySelector("#gameBoard").appendChild(box);
-    }
+  for (let boxes = 0; boxes < 30; boxes++) {
+    let box = document.createElement("div");
+    box.classList.add("box");
+    box.textContent = "";
+    document.querySelector("#gameBoard").appendChild(box);
   }
 }
+
 loadLetterBox();
 
 // Build a function to handle key press:
