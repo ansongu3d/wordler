@@ -5,7 +5,7 @@ const wordLength = 5;
 const gameBoard = document.querySelector("#gameBoard");
 const infoBox = document.querySelector("#infoBox");
 const wordList = ["super", "light", "actor", "goose", "whale"];
-const secretWord = wordList[Math.floor(Math.random() * (wordList.length + 1))];
+const secretWord = wordList[Math.floor(Math.random() * wordList.length)];
 console.log(secretWord);
 let previousLetters = 0;
 let guessWord = "";
@@ -59,13 +59,15 @@ function inputLetters(e) {
     console.log(wordLength);
     if (activeBoxes.length !== wordLength) {
       infoBox.textContent = "Not enough letters";
+      checkLetter();
       return;
     } else if (!wordList.includes(guessWord)) {
       infoBox.textContent = "Not in word list";
+      checkLetter();
       return;
     } else if (secretWord.match(guessWord)) {
       checkLetter();
-      infoBox.textContent = " 🥳 Congrats! ☑️" + secretWord;
+      infoBox.textContent = " 🥳 Congrats! ☑️ " + secretWord;
       return;
     }
   }
@@ -101,15 +103,16 @@ function deleteKey() {
 }
 
 function checkLetter() {
-  const keyBox = gameBoard.querySelector("[data-letter]");
-  const letter = keyBox.dataset.letter;
-  console.log(guessWord);
-  console.log(letter);
+  const keyBoxes = gameBoard.querySelectorAll("[data-letter]");
+  //console.log(keyBoxes);
+
   for (let i = 0; i < 5; i++) {
+    const keyBox = keyBoxes[i];
     if (secretWord[i] === guessWord[i]) {
+      //console.log(secretWord[i]);
       keyBox.dataset.state = "correct";
       keyBox.classList.add("correct");
-    } else if (secretWord.includes(letter)) {
+    } else if (secretWord.includes(guessWord[i])) {
       keyBox.dataset.state = "wrong-location";
       keyBox.classList.add("wrong-location");
     } else {
