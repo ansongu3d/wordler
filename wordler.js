@@ -98,13 +98,13 @@ function enterTrigger() {
     infoBox.textContent = "Not in word list";
   }
   if (secretWord === guessWord) {
-    infoBox.textContent = " 🥳 Congrats! ☑️ " + secretWord;
+    infoBox.textContent = " 💥 Congrats! ✅ " + secretWord;
     document.querySelector("body").style.backgroundColor = "#d8d227";
     removePress();
   }
   const remainBoxes = gameBoard.querySelectorAll(":not([data-letter])");
   if (remainBoxes.length === 0) {
-    infoBox.textContent = "Game Over! Try again?";
+    infoBox.textContent = "👿 " + secretWord + " 👉 Try again?";
     removePress();
   }
   checkLetter(guessWord);
