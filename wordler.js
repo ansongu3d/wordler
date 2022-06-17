@@ -121,7 +121,6 @@ function clickLetters(e) {
     return;
   }
   if (e.target.matches("[data-key]")) {
-    console.log(e.target.dataset.key);
     const keyBoxes = getActiveBoxes();
     if (keyBoxes.length - previousLetters >= wordLength) {
       return;
