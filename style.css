@@ -106,20 +106,20 @@ header {
 }
 
 .box[data-state="active"] {
-  border-color: hsl(0, 8%, 97%);
+  border-color: rgb(0, 157, 255);
 }
 
 .box[data-state="wrong"] {
   border: none;
-  background-color: hsl(240, 2%, 23%);
+  background-color: rgb(84, 84, 84);
 }
 
 .box[data-state="wrong-location"] {
   border: none;
-  background-color: hsl(49, 51%, 47%);
+  background-color: rgb(243, 123, 11);
 }
 
 .box[data-state="correct"] {
   border: none;
-  background-color: hsl(115, 29%, 43%);
+  background-color: rgb(30, 139, 0);
 }

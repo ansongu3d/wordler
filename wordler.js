@@ -102,15 +102,13 @@ function enterTrigger() {
     document.querySelector("body").style.backgroundColor = "#d8d227";
     removePress();
   }
+  const remainBoxes = gameBoard.querySelectorAll(":not([data-letter])");
+  if (remainBoxes.length === 0) {
+    infoBox.textContent = "Game Over! Try again?";
+    removePress();
+  }
   checkLetter(guessWord);
 }
-
-// const lastbox = document.querySelector("#gameBoard").lastChild;
-// if ((lastbox.dataset.state = "wrong" && !secretWord === guessWord)) {
-//   console.log(lastbox.dataset.state);
-//   infoBox.textContent = "Game Over! Again?";
-//   return;
-// }
 
 function clickLetters(e) {
   if (e.target.matches("[data-key='ENTER']")) {
