@@ -100,7 +100,6 @@ function enterTrigger() {
   if (secretWord === guessWord) {
     infoBox.textContent = " 🥳 Congrats! ☑️ " + secretWord;
     document.querySelector("body").style.backgroundColor = "#d8d227";
-    // document.querySelector("#keyboard").style.backgroundColor = "#d8d227";
     removePress();
   }
   checkLetter(guessWord);
@@ -114,27 +113,25 @@ function enterTrigger() {
 // }
 
 function clickLetters(e) {
+  if (e.target.matches("[data-key='ENTER']")) {
+    enterTrigger();
+    return;
+  }
+
+  if (e.target.matches("[data-key='«']")) {
+    deleteKey();
+    return;
+  }
   if (e.target.matches("[data-key]")) {
-    // pressKey(e.target.dataset.key);
+    console.log(e.target.dataset.key);
     const keyBoxes = getActiveBoxes();
     if (keyBoxes.length - previousLetters >= wordLength) {
       return;
     }
     const keyBox = gameBoard.querySelector(":not([data-letter])");
-    keyBox.dataset.letter = e.target.dataset.key;
+    keyBox.dataset.letter = e.target.dataset.key.toLowerCase();
     keyBox.textContent = e.target.dataset.key;
     keyBox.dataset.state = "active";
-    return;
-  }
-
-  if (e.target.matches('[data-key="ENTER"]')) {
-    enterTrigger();
-    return;
-  }
-
-  if (e.target.matches('[data-key="«"]')) {
-    console.log(e.target);
-    deleteKey();
     return;
   }
 }

@@ -102,6 +102,7 @@ header {
   font-family: "Press Start 2P", cursive;
   font-size: 1.2rem;
   display: inline-block;
+  color: rgb(0, 157, 255);
 }
 
 .box[data-state="active"] {
