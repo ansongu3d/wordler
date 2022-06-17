@@ -3,70 +3,146 @@ const wordLength = 5;
 const gameBoard = document.querySelector("#gameBoard");
 const infoBox = document.querySelector("#infoBox");
 const wordList = ["super", "light", "actor", "goose", "whale"];
-const secretWord = wordList[Math.floor(Math.random() * wordList.length)];
+const secretWord = wordList[Math.trunc(Math.random() * wordList.length)];
 console.log(secretWord);
 let previousLetters = 0;
-let guessWord = "";
 
 //merge 5 lettes in one word;
-function getGuessWord(activeBoxes, from, to) {
-  // let guessWord = "";
+function getGuessWord(keyBoxes, from, to) {
+  let guessWord = "";
   for (let i = from; i < to; ++i) {
-    guessWord += activeBoxes[i].getAttribute("data-letter");
+    guessWord += keyBoxes[i].getAttribute("data-letter");
   }
   return guessWord;
 }
 
 // create game board & letter box;
 function loadLetterBox() {
-  for (let boxes = 0; boxes < 30; boxes++) {
+  for (let b = 0; b < 30; b++) {
     let box = document.createElement("div");
     box.classList.add("box");
     box.textContent = "";
     document.querySelector("#gameBoard").appendChild(box);
   }
 }
-
 loadLetterBox();
 
-// Build a function to handle key press:
-// 1.max letters 5 for one word && press key must be A-Z letter;
-// 2."enter" key for sumbit guess word to match secretWord;
-// 3."backspace" & "delete" key to remove the wrong type letter;
-// 4.letter box change color: ACTIVE: Light Grey, WRONG: Grey, WRONG_LOCATION: yellow, CORRECT: green;
-// 5.create infoBox to show hint message: 1."Not Enough Letters", 2."Not In the Wordlist", 3.'Congratations! Matched:"secretword"'
-
+function loadKeyBoard() {
+  const keys = [
+    "Q",
+    "W",
+    "E",
+    "R",
+    "T",
+    "Y",
+    "U",
+    "I",
+    "O",
+    "P",
+    "space",
+    "A",
+    "S",
+    "D",
+    "F",
+    "G",
+    "H",
+    "J",
+    "K",
+    "L",
+    "space",
+    "ENTER",
+    "Z",
+    "X",
+    "C",
+    "V",
+    "B",
+    "N",
+    "M",
+    "«",
+  ];
+  for (let k = 0; k < 30; k++) {
+    const keyElement = document.createElement("button");
+    keyElement.textContent = keys[k];
+    keyElement.dataset.key = keys[k];
+    keyElement.classList.add("key");
+    keyboard.append(keyElement);
+  }
+}
+loadKeyBoard();
+// Build functions to handle key press;
 startPress();
 
 function startPress() {
   document.addEventListener("keyup", inputLetters);
+  document.addEventListener("click", clickLetters);
+}
+
+function removePress() {
+  document.removeEventListener("keyup", inputLetters);
+  document.removeEventListener("click", clickLetters);
 }
 
 function getActiveBoxes() {
   return gameBoard.querySelectorAll('[data-state="active"]');
 }
+
+function enterTrigger() {
+  const keyBoxes = getActiveBoxes();
+  const allLetterLength = keyBoxes.length;
+  if (allLetterLength === 0 || allLetterLength % wordLength !== 0) {
+    infoBox.textContent = "Not enough letters";
+    return;
+  }
+  const guessWord = getGuessWord(keyBoxes, 0, 5);
+  if (!wordList.includes(guessWord)) {
+    infoBox.textContent = "Not in word list";
+  }
+  if (secretWord === guessWord) {
+    infoBox.textContent = " 🥳 Congrats! ☑️ " + secretWord;
+    document.querySelector("body").style.backgroundColor = "#d8d227";
+    // document.querySelector("#keyboard").style.backgroundColor = "#d8d227";
+    removePress();
+  }
+  checkLetter(guessWord);
+}
+
+// const lastbox = document.querySelector("#gameBoard").lastChild;
+// if ((lastbox.dataset.state = "wrong" && !secretWord === guessWord)) {
+//   console.log(lastbox.dataset.state);
+//   infoBox.textContent = "Game Over! Again?";
+//   return;
+// }
+
+function clickLetters(e) {
+  if (e.target.matches("[data-key]")) {
+    // pressKey(e.target.dataset.key);
+    const keyBoxes = getActiveBoxes();
+    if (keyBoxes.length - previousLetters >= wordLength) {
+      return;
+    }
+    const keyBox = gameBoard.querySelector(":not([data-letter])");
+    keyBox.dataset.letter = e.target.dataset.key;
+    keyBox.textContent = e.target.dataset.key;
+    keyBox.dataset.state = "active";
+    return;
+  }
+
+  if (e.target.matches('[data-key="ENTER"]')) {
+    enterTrigger();
+    return;
+  }
+
+  if (e.target.matches('[data-key="«"]')) {
+    console.log(e.target);
+    deleteKey();
+    return;
+  }
+}
+
 function inputLetters(e) {
   // enter to match;
   if (e.key === "Enter") {
-    const activeBoxes = getActiveBoxes();
-    getGuessWord(activeBoxes, 0, 5);
-    previousLetters = activeBoxes.length;
-    console.log(guessWord);
-    console.log(activeBoxes.length);
-    console.log(wordLength);
-    if (activeBoxes.length !== wordLength) {
-      infoBox.textContent = "Not enough letters";
-      checkLetter();
-      return;
-    } else if (!wordList.includes(guessWord)) {
-      infoBox.textContent = "Not in word list";
-      checkLetter();
-      return;
-    } else if (secretWord.match(guessWord)) {
-      checkLetter();
-      infoBox.textContent = " 🥳 Congrats! ☑️ " + secretWord;
-      return;
-    }
+    enterTrigger();
   }
   // delete mistake letters;
   else if (e.key === "Backspace" || e.key === "Delete") {
@@ -74,9 +150,9 @@ function inputLetters(e) {
     return;
   }
   // limit type keyA-Z;
-  else if (e.key.match(/^[a-zA-Z]+$/)) {
-    const activeBoxes = getActiveBoxes();
-    if (activeBoxes.length - previousLetters >= wordLength) {
+  else if (e.key.match(/^[a-zA-Z]$/)) {
+    const keyBoxes = getActiveBoxes();
+    if (keyBoxes.length - previousLetters >= wordLength) {
       return;
     }
     const keyBox = gameBoard.querySelector(":not([data-letter])");
@@ -88,8 +164,8 @@ function inputLetters(e) {
 }
 
 function deleteKey() {
-  const activeBoxes = getActiveBoxes();
-  const lastBox = activeBoxes[activeBoxes.length - 1];
+  const keyBoxes = getActiveBoxes();
+  const lastBox = keyBoxes[keyBoxes.length - 1];
   if (lastBox == null) {
     return;
   } else {
@@ -98,11 +174,8 @@ function deleteKey() {
     delete lastBox.dataset.letter;
   }
 }
-
-function checkLetter() {
-  const keyBoxes = gameBoard.querySelectorAll("[data-letter]");
-  //console.log(keyBoxes);
-
+function checkLetter(guessWord) {
+  const keyBoxes = getActiveBoxes();
   for (let i = 0; i < 5; i++) {
     const keyBox = keyBoxes[i];
     if (secretWord[i] === guessWord[i]) {
