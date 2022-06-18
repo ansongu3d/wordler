@@ -25,7 +25,7 @@ was `upper`, and then the third guess really only has one good option
 given the constraints revealed so far: `super`. This was the hidden
 target word, which means you win the game!
 
-<img src="game.png" />
+<img src="wordler/game.png" />
 
 The process of finding good candidate words given letters which have
 been seen so far is a good match for word_list. This javascript
